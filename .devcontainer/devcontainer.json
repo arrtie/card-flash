@@ -2,6 +2,7 @@
   "name": "Vite + Preact Template",
   "image": "node:bookworm",
   "forwardPorts": [9000],
+  "postStartCommand": "npm i",
   "customizations": {
     "vscode": {
       "extensions": [
