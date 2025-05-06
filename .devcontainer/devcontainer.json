@@ -1,0 +1,15 @@
+{
+  "name": "Vite + Preact Template",
+  "image": "node:bookworm",
+  "forwardPorts": [9000],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "ms-azuretools.vscode-docker",
+        "vitest.explorer"
+      ]
+    }
+  }
+}
