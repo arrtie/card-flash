@@ -1,10 +1,6 @@
 /** @format */
 
-// check for DB
-// init DB
-// request all of a type of record
-
-import { left, map, right } from "fp-ts/lib/Either";
+import { left, map, mapLeft, right } from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
 
 import { IDBPDatabase, openDB } from "idb";
@@ -20,6 +16,9 @@ interface DatabaseAndStore {
   storeName: string;
 }
 
+const STORE_NAME = "flashcards";
+const KEY_PATH = "uid";
+
 async function createOrGetStoreInDB({
   databaseName,
   storeName,
@@ -30,7 +29,7 @@ async function createOrGetStoreInDB({
       // Checks if the object store exists:
       if (!db.objectStoreNames.contains(storeName)) {
         // If the object store does not exist, create it:
-        db.createObjectStore(storeName, { autoIncrement: true });
+        db.createObjectStore(storeName, { keyPath: KEY_PATH });
         console.log("object store created");
       } else {
         console.log("object store already exists");
@@ -38,8 +37,6 @@ async function createOrGetStoreInDB({
     },
   });
 }
-
-const STORE_NAME = "flashcards";
 
 const insertDatabaseDetails = (
   cb: (props: DatabaseAndStore) => Promise<IDBPDatabase<unknown>>
@@ -64,7 +61,11 @@ export const createFlashcard = (flashcard: Flashcard) => {
     openFlashcardDB(),
     map(async (dbPromise) => {
       const tx = (await dbPromise).transaction(STORE_NAME, "readwrite");
-      tx.store.add({ ...flashcard, created: new Date().getTime() });
+      tx.store.add({
+        ...flashcard,
+        created: new Date().getTime(),
+        uid: btoa(flashcard.question),
+      });
       return tx.done;
     })
   );
@@ -74,5 +75,19 @@ export const getAllFlashcards = () => {
   return pipe(
     openFlashcardDB(),
     map(async (dbPromise) => (await dbPromise).getAll(STORE_NAME))
+  );
+};
+
+export const destroyFlashcard = (question: string) => {
+  // TODO: replace with a unique ID generator
+  const uid = btoa(question);
+  return pipe(
+    openFlashcardDB(),
+    mapLeft((e) => console.warn(e)),
+    map(async (dbPromise) => {
+      const db = await dbPromise;
+      const tx = db.transaction(STORE_NAME, "readwrite");
+      return Promise.all([tx.store.delete(uid), tx.done]);
+    })
   );
 };
