@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "preact/hooks";
 import { Flashcard } from "../model.ts";
+import FlashcardDeck from "./FlashcardDeck.tsx";
 
 const sendToAnthro = async (e: Event & { currentTarget: HTMLFormElement }) => {
   const formData = new FormData(e.currentTarget);
@@ -39,24 +40,7 @@ export default function DataConverter() {
         <textarea id="userInput" name="userInput" required></textarea>
         <button type="submit">DO IT</button>
       </form>
-      <output>
-        <h1>Responses</h1>
-        {responseData?.length == null ? null : (
-          <ul>
-            {responseData.map((qAndA) => {
-              return (
-                <>
-                  <li key={qAndA.question}>
-                    <p>{qAndA.question}</p>
-                    <p>{qAndA.answer}</p>
-                  </li>
-                </>
-              );
-            })}
-          </ul>
-        )}
-        <p>error: {error}</p>
-      </output>
+      <FlashcardDeck flashcards={responseData} error={error} />
     </>
   );
 }
