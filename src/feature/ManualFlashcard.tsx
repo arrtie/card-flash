@@ -3,7 +3,11 @@
 import { isLeft, isRight, left, right } from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
 import { useCallback, useEffect, useState } from "preact/hooks";
-import { getFlashcards, postFlashcard } from "../api/flashcards";
+import {
+  deleteFlashcard,
+  getFlashcards,
+  postFlashcard,
+} from "../api/flashcards";
 import { Flashcard } from "../model";
 import FlashcardDeck from "./FlashcardDeck";
 
@@ -25,6 +29,18 @@ const sendQAFormDataToAPI = async (
 export default function ManualFlashcard() {
   const [responseData, setResponseData] = useState<Flashcard[]>();
   const [error, setError] = useState<string>("none yet");
+  const [count, setCount] = useState(0);
+
+  const refreshCards = useCallback(() => {
+    setCount((prev) => ++prev);
+  }, []);
+
+  const onDelete = (qAndA: Flashcard) =>
+    deleteFlashcard(qAndA.question)
+      .then(() => {
+        refreshCards();
+      })
+      .catch((err) => console.error(err));
 
   const handleSubmit = useCallback(
     async (e: Event & { currentTarget: HTMLFormElement }) => {
@@ -76,7 +92,7 @@ export default function ManualFlashcard() {
         setResponseData(dataOrError);
       }
     });
-  }, []);
+  }, [count]);
 
   return (
     <>
@@ -95,7 +111,11 @@ export default function ManualFlashcard() {
         </fieldset>
         <button type="submit">Flash card</button>
       </form>
-      <FlashcardDeck flashcards={responseData} error={error} />
+      <FlashcardDeck
+        flashcards={responseData}
+        error={error}
+        onDelete={onDelete}
+      />
     </>
   );
 }
