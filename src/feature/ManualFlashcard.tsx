@@ -3,7 +3,7 @@
 import { left, right } from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
 import { useCallback } from "preact/hooks";
-import { postFlashcard } from "../api/flashcards";
+import { submitFlashcards } from "../adapters/flashcardSubmitter";
 
 const sendQAFormDataToAPI = async (
   e: Event & { currentTarget: HTMLFormElement }
@@ -12,12 +12,20 @@ const sendQAFormDataToAPI = async (
   const question = formData.get("question") ?? "empty question";
   const answer = formData.get("answer") ?? "empty answer";
 
-  const response = await postFlashcard({
-    question: question.toString(),
-    answer: answer.toString(),
-  });
+  const responses = await submitFlashcards([
+    {
+      question: question.toString(),
+      answer: answer.toString(),
+    },
+  ]);
+  const firstResponse = responses[0];
+  return firstResponse instanceof Error ? firstResponse.message : "success";
+};
 
-  return response instanceof Error ? response.message : "success";
+const labelStyle = {
+  display: "flex",
+  justifyContent: "flex-start",
+  flexDirection: "column",
 };
 
 export default function ManualFlashcard() {
@@ -33,20 +41,27 @@ export default function ManualFlashcard() {
   );
 
   return (
-    <form onSubmit={handleSubmit} name="flashcard_submission">
-      <fieldset>
-        <label for="question">
+    <section>
+      <h2>Manual</h2>
+      <form
+        onSubmit={handleSubmit}
+        name="flashcard_submission"
+        style={{
+          display: "flex",
+          justifyContent: "flex-start",
+          flexDirection: "column",
+        }}
+      >
+        <label for="question" style={labelStyle}>
           Question: <span aria-label="required">*</span>
+          <textarea id="question" name="question" required rows={6}></textarea>
         </label>
-        <textarea id="question" name="question" required></textarea>
-      </fieldset>
-      <fieldset>
-        <label for="answer">
+        <label for="answer" style={labelStyle}>
           Answer: <span aria-label="required">*</span>
+          <textarea id="answer" name="answer" required rows={6}></textarea>
         </label>
-        <textarea id="answer" name="answer" required></textarea>
-      </fieldset>
-      <button type="submit">Flash card</button>
-    </form>
+        <button type="submit">Flash card</button>
+      </form>
+    </section>
   );
 }

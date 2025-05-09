@@ -29,9 +29,7 @@ export default function FlashcardsProvider({
 }
 
 function useFlashcardsDataFeed(): Flashcard[] {
-  const [flashcardsFeedData, setFlashcardsFeedData] = useState<Flashcard[]>([
-    { question: "yes?", answer: "no" },
-  ]);
+  const [flashcardsFeedData, setFlashcardsFeedData] = useState<Flashcard[]>([]);
 
   useEffect(() => {
     const fetchFlashcards = flow(getFlashcards, async (dataOrErrorPromise) => {
@@ -40,8 +38,9 @@ function useFlashcardsDataFeed(): Flashcard[] {
         setFlashcardsFeedData(dataOrError);
       }
     });
-
-    // TODO: actually load data here
+    // fetch on mount
+    fetchFlashcards();
+    // TODO: don't use an interval
     const interval = setInterval(fetchFlashcards, 6000);
     return () => {
       clearInterval(interval);

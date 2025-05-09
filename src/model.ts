@@ -1,6 +1,6 @@
 /** @format */
 
-type ResponseErrors = "missing content" | "error parsing content";
+export type ResponseErrors = "missing content" | "error parsing content";
 
 export type ParsedResponse =
   | {
