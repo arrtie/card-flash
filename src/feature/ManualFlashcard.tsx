@@ -1,15 +1,9 @@
 /** @format */
 
-import { isLeft, isRight, left, right } from "fp-ts/lib/Either";
+import { left, right } from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
-import { useCallback, useEffect, useState } from "preact/hooks";
-import {
-  deleteFlashcard,
-  getFlashcards,
-  postFlashcard,
-} from "../api/flashcards";
-import { Flashcard } from "../model";
-import FlashcardDeck from "./FlashcardDeck";
+import { useCallback } from "preact/hooks";
+import { postFlashcard } from "../api/flashcards";
 
 const sendQAFormDataToAPI = async (
   e: Event & { currentTarget: HTMLFormElement }
@@ -27,95 +21,32 @@ const sendQAFormDataToAPI = async (
 };
 
 export default function ManualFlashcard() {
-  const [responseData, setResponseData] = useState<Flashcard[]>();
-  const [error, setError] = useState<string>("none yet");
-  const [count, setCount] = useState(0);
-
-  const refreshCards = useCallback(() => {
-    setCount((prev) => ++prev);
-  }, []);
-
-  const onDelete = (qAndA: Flashcard) =>
-    deleteFlashcard(qAndA.question)
-      .then(() => {
-        refreshCards();
-      })
-      .catch((err) => console.error(err));
-
   const handleSubmit = useCallback(
     async (e: Event & { currentTarget: HTMLFormElement }) => {
       e.preventDefault();
-      pipe(
-        e,
-        sendQAFormDataToAPI,
-        async (postPromise) => {
-          const response = await postPromise;
-          return response === "success" ? right(response) : left(response);
-        },
-        async (eitherPromise) => {
-          const result = await eitherPromise;
-          if (isRight(result)) {
-            return right(getFlashcards());
-          }
-          return result;
-        },
-        async (eitherPromise) => {
-          const maybePromise = await eitherPromise;
-          if (isRight(maybePromise)) {
-            const result = await maybePromise.right;
-            if (result instanceof Error) {
-              return left(result.message);
-            }
-            return right(result);
-          }
-          return maybePromise;
-        },
-        async (dataOrErrorPromise) => {
-          const dataOrError = await dataOrErrorPromise;
-          if (isLeft(dataOrError)) {
-            setError(dataOrError.left);
-          } else {
-            setResponseData(dataOrError.right);
-          }
-        }
-      );
+      pipe(e, sendQAFormDataToAPI, async (postPromise) => {
+        const response = await postPromise;
+        return response === "success" ? right(response) : left(response);
+      });
     },
     []
   );
 
-  useEffect(() => {
-    pipe(getFlashcards(), async (dataOrErrorPromise) => {
-      const dataOrError = await dataOrErrorPromise;
-      if (dataOrError instanceof Error) {
-        setError(dataOrError.message);
-      } else {
-        setResponseData(dataOrError);
-      }
-    });
-  }, [count]);
-
   return (
-    <>
-      <form onSubmit={handleSubmit} name="flashcard_submission">
-        <fieldset>
-          <label for="question">
-            Question: <span aria-label="required">*</span>
-          </label>
-          <textarea id="question" name="question" required></textarea>
-        </fieldset>
-        <fieldset>
-          <label for="answer">
-            Answer: <span aria-label="required">*</span>
-          </label>
-          <textarea id="answer" name="answer" required></textarea>
-        </fieldset>
-        <button type="submit">Flash card</button>
-      </form>
-      <FlashcardDeck
-        flashcards={responseData}
-        error={error}
-        onDelete={onDelete}
-      />
-    </>
+    <form onSubmit={handleSubmit} name="flashcard_submission">
+      <fieldset>
+        <label for="question">
+          Question: <span aria-label="required">*</span>
+        </label>
+        <textarea id="question" name="question" required></textarea>
+      </fieldset>
+      <fieldset>
+        <label for="answer">
+          Answer: <span aria-label="required">*</span>
+        </label>
+        <textarea id="answer" name="answer" required></textarea>
+      </fieldset>
+      <button type="submit">Flash card</button>
+    </form>
   );
 }
