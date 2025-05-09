@@ -1,7 +1,9 @@
 /** @format */
 
+import { flow } from "fp-ts/lib/function";
 import { ReactNode } from "preact/compat";
 import { useEffect, useMemo, useState } from "preact/hooks";
+import { getFlashcards } from "../api/flashcards";
 import { Flashcard } from "../model";
 import FlashcardsContext from "./FlashcardContext";
 
@@ -32,10 +34,15 @@ function useFlashcardsDataFeed(): Flashcard[] {
   ]);
 
   useEffect(() => {
+    const fetchFlashcards = flow(getFlashcards, async (dataOrErrorPromise) => {
+      const dataOrError = await dataOrErrorPromise;
+      if (!(dataOrError instanceof Error)) {
+        setFlashcardsFeedData(dataOrError);
+      }
+    });
+
     // TODO: actually load data here
-    const interval = setInterval(() => {
-      setFlashcardsFeedData([{ question: "yes?", answer: "no" }]);
-    }, 60000);
+    const interval = setInterval(fetchFlashcards, 6000);
     return () => {
       clearInterval(interval);
     };
