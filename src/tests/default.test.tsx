@@ -10,6 +10,6 @@ function renderApp() {
 describe("by default", () => {
   it("should find the heading", async () => {
     renderApp();
-    expect(screen.getByRole("heading", { name: "Vite & Preact template" }));
+    expect(screen.getByRole("heading", { name: "Card Flash" }));
   });
 });
