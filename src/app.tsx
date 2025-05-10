@@ -3,9 +3,9 @@
 import { isLeft, left, map, match, right } from "fp-ts/lib/Either";
 import { flow, pipe } from "fp-ts/lib/function";
 import { useCallback, useEffect, useState } from "preact/hooks";
-import { submitFlashcards } from "./adapters/flashcardSubmitter.ts";
 import "./app.css";
 import DataConverter from "./feature/DataConverter.tsx";
+import { submitFlashcardsToMutator } from "./feature/DeckMutator.ts";
 import DeckWrapper from "./feature/DeckWrapper.tsx";
 import FlashcardsProvider from "./feature/FlashcardsProvider.tsx";
 import ManualFlashcard from "./feature/ManualFlashcard.tsx";
@@ -55,7 +55,7 @@ export function App() {
           (errorString) => setError(errorString),
           (flashcards) => {
             console.log("flashcards returned from Anthropic", flashcards);
-            submitFlashcards(flashcards);
+            submitFlashcardsToMutator(flashcards);
           }
         )(response);
       });
