@@ -4,7 +4,7 @@ import { left, map, mapLeft, right } from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
 
 import { IDBPDatabase, openDB } from "idb";
-import { Flashcard } from "../model";
+import { IFlashcard } from "../model";
 
 const assertIndexedDB = () => {
   // Check for IndexedDB support:
@@ -56,7 +56,7 @@ const openFlashcardDB = () => {
   );
 };
 
-export const createFlashcard = (flashcard: Flashcard) => {
+export const createFlashcard = (flashcard: IFlashcard) => {
   return pipe(
     openFlashcardDB(),
     map(async (dbPromise) => {

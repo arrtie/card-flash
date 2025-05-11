@@ -7,10 +7,12 @@ export default function FlashcardDeck({
   flashcards,
   error,
   onDelete,
+  onComplete,
 }: {
   flashcards: IFlashcard[];
   error: string | undefined;
   onDelete: (qAndA: IFlashcard) => void;
+  onComplete: (qAndA: IFlashcard) => void;
 }) {
   return (
     <output>
@@ -23,6 +25,7 @@ export default function FlashcardDeck({
                 <li key={qAndA.question}>
                   <Flashcard qAndA={qAndA} />
                   <button onClick={() => onDelete(qAndA)}>Delete</button>
+                  <button onClick={() => onComplete(qAndA)}>Complete</button>
                 </li>
               </>
             );

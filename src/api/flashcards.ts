@@ -6,7 +6,7 @@ import {
   createFlashcard,
   destroyFlashcard,
   getAllFlashcards,
-} from "../adapters/indexedDB";
+} from "../backend/flashcardsIDB";
 
 export const getFlashcards = flow(
   getAllFlashcards,
