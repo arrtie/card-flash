@@ -1,9 +1,9 @@
 /** @format */
 
 import { postFlashcard } from "../api/flashcards";
-import { Flashcard } from "../model";
+import { IFlashcard } from "../model";
 
-export const submitFlashcards = (flashcards: Flashcard[]) => {
+export const submitFlashcards = (flashcards: IFlashcard[]) => {
   const submittedCards = flashcards.map((flashcard) => {
     return postFlashcard(flashcard);
   });

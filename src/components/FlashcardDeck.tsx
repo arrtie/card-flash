@@ -1,15 +1,16 @@
 /** @format */
 
-import { Flashcard } from "../model";
+import { IFlashcard } from "../model";
+import Flashcard from "./Flashcard";
 
 export default function FlashcardDeck({
   flashcards,
   error,
   onDelete,
 }: {
-  flashcards: Flashcard[];
+  flashcards: IFlashcard[];
   error: string | undefined;
-  onDelete: (qAndA: Flashcard) => void;
+  onDelete: (qAndA: IFlashcard) => void;
 }) {
   return (
     <output>
@@ -20,8 +21,7 @@ export default function FlashcardDeck({
             return (
               <>
                 <li key={qAndA.question}>
-                  <p>Q: {qAndA.question}</p>
-                  <p>A: {qAndA.answer}</p>
+                  <Flashcard qAndA={qAndA} />
                   <button onClick={() => onDelete(qAndA)}>Delete</button>
                 </li>
               </>

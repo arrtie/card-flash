@@ -2,7 +2,7 @@
 
 import { pipe } from "fp-ts/lib/function";
 import { useCallback } from "preact/hooks";
-import { submitFlashcardsToMutator } from "./DeckMutator";
+import { submitFlashcards } from "./DeckMutator";
 
 const formatFormData = (e: Event & { currentTarget: HTMLFormElement }) => {
   const formData = new FormData(e.currentTarget);
@@ -27,7 +27,7 @@ export default function ManualFlashcard() {
   const handleSubmit = useCallback(
     async (e: Event & { currentTarget: HTMLFormElement }) => {
       e.preventDefault();
-      pipe(e, formatFormData, submitFlashcardsToMutator);
+      pipe(e, formatFormData, submitFlashcards);
     },
     []
   );

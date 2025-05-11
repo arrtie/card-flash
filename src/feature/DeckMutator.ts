@@ -1,7 +1,10 @@
 /** @format */
 
-import { submitFlashcards } from "../adapters/flashcardSubmitter";
-import { Flashcard } from "../model";
+import {
+  deleteFlashcard as deleteFlashcardAPI,
+  postFlashcard,
+} from "../api/flashcards";
+import { IFlashcard } from "../model";
 import Observer from "../patterns/Observer";
 import { Subject } from "../patterns/Subject";
 
@@ -19,10 +22,22 @@ export const subscribeToDeckMutator = (obs: Observer<DeckMutatorEvent>) => {
   };
 };
 
-export const submitFlashcardsToMutator = async (flaschards: Flashcard[]) => {
-  const result = await submitFlashcards(flaschards);
+export const submitFlashcards = async (flashcards: IFlashcard[]) => {
+  const submittedCards = flashcards.map((flashcard) => {
+    return postFlashcard(flashcard);
+  });
+
+  const result = await Promise.all(submittedCards);
   const isValid = result.every((result) => result === undefined);
   if (isValid) {
     emitUpdate();
   }
+};
+
+// hypothesis: using the mutator will allow me to create side-effects when the deck has been updated
+
+export const deleteFlashcard = (qAndA: IFlashcard) => {
+  deleteFlashcardAPI(qAndA.question).finally(() => {
+    emitUpdate();
+  });
 };

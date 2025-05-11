@@ -4,7 +4,7 @@ import { flow } from "fp-ts/lib/function";
 import { ReactNode } from "preact/compat";
 import { useEffect, useMemo, useState } from "preact/hooks";
 import { getFlashcards } from "../api/flashcards";
-import { Flashcard } from "../model";
+import { IFlashcard } from "../model";
 import Observer from "../patterns/Observer";
 import { DeckMutatorEvent, subscribeToDeckMutator } from "./DeckMutator";
 import FlashcardsContext from "./FlashcardContext";
@@ -30,8 +30,10 @@ export default function FlashcardsProvider({
   );
 }
 
-function useFlashcardsDataFeed(): Flashcard[] {
-  const [flashcardsFeedData, setFlashcardsFeedData] = useState<Flashcard[]>([]);
+function useFlashcardsDataFeed(): IFlashcard[] {
+  const [flashcardsFeedData, setFlashcardsFeedData] = useState<IFlashcard[]>(
+    []
+  );
 
   useEffect(() => {
     const fetchFlashcards = flow(getFlashcards, async (dataOrErrorPromise) => {

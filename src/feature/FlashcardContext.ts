@@ -1,10 +1,10 @@
 /** @format */
 
 import { createContext } from "preact";
-import { Flashcard } from "../model";
+import { IFlashcard } from "../model";
 
 interface IFlashcardsContext {
-  flashcards: Flashcard[];
+  flashcards: IFlashcard[];
 }
 
 const initialState: IFlashcardsContext = {
