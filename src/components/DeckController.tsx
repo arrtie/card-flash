@@ -16,7 +16,16 @@ export default function DeckController() {
       setError(err.message);
     });
 
+  const onComplete = (qAndA: IFlashcard) => {
+    console.error("err");
+  };
+
   return (
-    <FlashcardDeck flashcards={flashcards} error={error} onDelete={onDelete} />
+    <FlashcardDeck
+      flashcards={flashcards}
+      error={error}
+      onDelete={onDelete}
+      onComplete={onComplete}
+    />
   );
 }
