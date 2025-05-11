@@ -5,6 +5,8 @@ import { ReactNode } from "preact/compat";
 import { useEffect, useMemo, useState } from "preact/hooks";
 import { getFlashcards } from "../api/flashcards";
 import { Flashcard } from "../model";
+import Observer from "../patterns/Observer";
+import { DeckMutatorEvent, subscribeToDeckMutator } from "./DeckMutator";
 import FlashcardsContext from "./FlashcardContext";
 
 interface FlashcardsProviderProps {
@@ -38,12 +40,16 @@ function useFlashcardsDataFeed(): Flashcard[] {
         setFlashcardsFeedData(dataOrError);
       }
     });
+
+    const unsub = subscribeToDeckMutator(
+      new Observer<DeckMutatorEvent>(fetchFlashcards)
+    );
+
     // fetch on mount
     fetchFlashcards();
-    // TODO: don't use an interval
-    const interval = setInterval(fetchFlashcards, 6000);
+
     return () => {
-      clearInterval(interval);
+      unsub();
     };
   }, []);
 

@@ -1,25 +1,20 @@
 /** @format */
 
-import { left, right } from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
 import { useCallback } from "preact/hooks";
-import { submitFlashcards } from "../adapters/flashcardSubmitter";
+import { submitFlashcardsToMutator } from "./DeckMutator";
 
-const sendQAFormDataToAPI = async (
-  e: Event & { currentTarget: HTMLFormElement }
-) => {
+const formatFormData = (e: Event & { currentTarget: HTMLFormElement }) => {
   const formData = new FormData(e.currentTarget);
   const question = formData.get("question") ?? "empty question";
   const answer = formData.get("answer") ?? "empty answer";
 
-  const responses = await submitFlashcards([
+  return [
     {
       question: question.toString(),
       answer: answer.toString(),
     },
-  ]);
-  const firstResponse = responses[0];
-  return firstResponse instanceof Error ? firstResponse.message : "success";
+  ];
 };
 
 const labelStyle = {
@@ -32,10 +27,7 @@ export default function ManualFlashcard() {
   const handleSubmit = useCallback(
     async (e: Event & { currentTarget: HTMLFormElement }) => {
       e.preventDefault();
-      pipe(e, sendQAFormDataToAPI, async (postPromise) => {
-        const response = await postPromise;
-        return response === "success" ? right(response) : left(response);
-      });
+      pipe(e, formatFormData, submitFlashcardsToMutator);
     },
     []
   );
