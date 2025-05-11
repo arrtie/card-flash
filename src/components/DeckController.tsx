@@ -2,16 +2,15 @@
 
 import { useState } from "preact/hooks";
 import { deleteFlashcard } from "../api/flashcards";
-import { Flashcard } from "../model";
+import useFlashcards from "../feature/useFlashcards";
+import { IFlashcard } from "../model";
 import FlashcardDeck from "./FlashcardDeck";
-import useFlashcards from "./useFlashcards";
 
-export default function DeckWrapper() {
+export default function DeckController() {
   const [error, setError] = useState<string>("");
   const flashcards = useFlashcards();
-  console.log("flashcards: ", flashcards);
 
-  const onDelete = (qAndA: Flashcard) =>
+  const onDelete = (qAndA: IFlashcard) =>
     deleteFlashcard(qAndA.question).catch((err) => {
       console.error(err);
       setError(err.message);

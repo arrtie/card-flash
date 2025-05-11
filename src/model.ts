@@ -1,18 +1,18 @@
 /** @format */
 
+export interface IFlashcard {
+  answer: string;
+  question: string;
+}
+
 export type ResponseErrors = "missing content" | "error parsing content";
 
 export type ParsedResponse =
   | {
       status: "success";
-      flashcards: Flashcard[];
+      flashcards: IFlashcard[];
     }
   | {
       status: "failure";
       message: ResponseErrors;
     };
-
-export interface Flashcard {
-  answer: string;
-  question: string;
-}
