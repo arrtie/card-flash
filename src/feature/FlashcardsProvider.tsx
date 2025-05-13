@@ -2,7 +2,7 @@
 
 import { flow } from "fp-ts/lib/function";
 import { ReactNode } from "preact/compat";
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import { getFlashcards } from "../api/flashcards";
 import { IFlashcard } from "../model";
 import Observer from "../patterns/Observer";
@@ -17,14 +17,9 @@ export default function FlashcardsProvider({
   children,
 }: FlashcardsProviderProps) {
   const flashcardsFeedData = useFlashcardsDataFeed();
-  const flashcardsValue = useMemo(
-    () => ({
-      flashcards: flashcardsFeedData,
-    }),
-    [flashcardsFeedData]
-  );
+
   return (
-    <FlashcardsContext.Provider value={flashcardsValue}>
+    <FlashcardsContext.Provider value={{ flashcards: flashcardsFeedData }}>
       {children}
     </FlashcardsContext.Provider>
   );
@@ -38,9 +33,10 @@ function useFlashcardsDataFeed(): IFlashcard[] {
   useEffect(() => {
     const fetchFlashcards = flow(getFlashcards, async (dataOrErrorPromise) => {
       const dataOrError = await dataOrErrorPromise;
-      if (!(dataOrError instanceof Error)) {
-        setFlashcardsFeedData(dataOrError);
+      if (dataOrError instanceof Error) {
+        return;
       }
+      setFlashcardsFeedData(dataOrError);
     });
 
     const unsub = subscribeToDeckMutator(

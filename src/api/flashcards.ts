@@ -3,13 +3,14 @@
 import { matchW } from "fp-ts/lib/Either";
 import { flow } from "fp-ts/lib/function";
 import {
-  createFlashcard,
-  destroyFlashcard,
-  getAllFlashcards,
-} from "../adapters/indexedDB";
+  createDBFlashcard,
+  destroyDBFlashcard,
+  getAllDBFlashcards,
+  updateDBFlashcard,
+} from "../backend/flashcardsIDB";
 
 export const getFlashcards = flow(
-  getAllFlashcards,
+  getAllDBFlashcards,
   matchW(
     (error) => Promise.resolve(error),
     (dbPromise) => dbPromise
@@ -17,7 +18,7 @@ export const getFlashcards = flow(
 );
 
 export const postFlashcard = flow(
-  createFlashcard,
+  createDBFlashcard,
   matchW(
     (error) => Promise.resolve(error),
     (dbPromise) => dbPromise
@@ -25,9 +26,17 @@ export const postFlashcard = flow(
 );
 
 export const deleteFlashcard = flow(
-  destroyFlashcard,
+  destroyDBFlashcard,
   matchW(
     (error) => Promise.resolve(error),
+    (dbPromise) => dbPromise
+  )
+);
+
+export const updateFlashcard = flow(
+  updateDBFlashcard,
+  matchW(
+    () => Promise.resolve(new Error("Update failed")),
     (dbPromise) => dbPromise
   )
 );
