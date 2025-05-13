@@ -2,6 +2,7 @@
 
 import { useState } from "preact/hooks";
 import { deleteFlashcard } from "../api/flashcards";
+import { reviewFlashcard } from "../feature/DeckMutator";
 import useFlashcards from "../feature/useFlashcards";
 import { IFlashcard } from "../model";
 import FlashcardDeck from "./FlashcardDeck";
@@ -16,8 +17,11 @@ export default function DeckController() {
       setError(err.message);
     });
 
-  const onComplete = (qAndA: IFlashcard) => {
-    console.error("err");
+  const onReview = (flashcard: IFlashcard) => {
+    reviewFlashcard(flashcard).catch((err) => {
+      console.error(err);
+      setError(err.message);
+    });
   };
 
   return (
@@ -25,7 +29,7 @@ export default function DeckController() {
       flashcards={flashcards}
       error={error}
       onDelete={onDelete}
-      onComplete={onComplete}
+      onReview={onReview}
     />
   );
 }

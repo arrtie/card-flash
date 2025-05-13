@@ -4,7 +4,8 @@ import { left, map, mapLeft, right } from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
 
 import { IDBPDatabase, openDB } from "idb";
-import { IFlashcard } from "../model";
+import questionToPrimaryKey from "../helpers/uid";
+import { IFlashcard, IQA } from "../model";
 
 const assertIndexedDB = () => {
   // Check for IndexedDB support:
@@ -56,31 +57,32 @@ const openFlashcardDB = () => {
   );
 };
 
-export const createFlashcard = (flashcard: IFlashcard) => {
+export const createDBFlashcard = (qa: IQA) => {
   return pipe(
     openFlashcardDB(),
     map(async (dbPromise) => {
       const tx = (await dbPromise).transaction(STORE_NAME, "readwrite");
       tx.store.add({
-        ...flashcard,
-        created: new Date().getTime(),
-        uid: btoa(flashcard.question),
+        ...qa,
+        last_review_success: null,
+        created: Date.now(),
+        uid: btoa(qa.question),
       });
       return tx.done;
     })
   );
 };
 
-export const getAllFlashcards = () => {
+export const getAllDBFlashcards = () => {
   return pipe(
     openFlashcardDB(),
     map(async (dbPromise) => (await dbPromise).getAll(STORE_NAME))
   );
 };
 
-export const destroyFlashcard = (question: string) => {
+export const destroyDBFlashcard = (question: string) => {
   // TODO: replace with a unique ID generator
-  const uid = btoa(question);
+  const uid = questionToPrimaryKey(question);
   return pipe(
     openFlashcardDB(),
     mapLeft((e) => console.warn(e)),
@@ -88,6 +90,18 @@ export const destroyFlashcard = (question: string) => {
       const db = await dbPromise;
       const tx = db.transaction(STORE_NAME, "readwrite");
       return Promise.all([tx.store.delete(uid), tx.done]);
+    })
+  );
+};
+
+export const updateDBFlashcard = (dbFlashcard: IFlashcard) => {
+  return pipe(
+    openFlashcardDB(),
+    mapLeft((e) => console.warn(e)),
+    map(async (dbPromise) => {
+      const db = await dbPromise;
+      const tx = db.transaction(STORE_NAME, "readwrite");
+      return Promise.all([tx.store.put(dbFlashcard), tx.done]);
     })
   );
 };

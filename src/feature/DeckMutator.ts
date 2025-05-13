@@ -3,8 +3,9 @@
 import {
   deleteFlashcard as deleteFlashcardAPI,
   postFlashcard,
+  updateFlashcard as updateFlashcardAPI,
 } from "../api/flashcards";
-import { IFlashcard } from "../model";
+import { IFlashcard, IQA } from "../model";
 import Observer from "../patterns/Observer";
 import { Subject } from "../patterns/Subject";
 
@@ -22,7 +23,7 @@ export const subscribeToDeckMutator = (obs: Observer<DeckMutatorEvent>) => {
   };
 };
 
-export const submitFlashcards = async (flashcards: IFlashcard[]) => {
+export const submitFlashcards = async (flashcards: IQA[]) => {
   const submittedCards = flashcards.map((flashcard) => {
     return postFlashcard(flashcard);
   });
@@ -38,6 +39,15 @@ export const submitFlashcards = async (flashcards: IFlashcard[]) => {
 
 export const deleteFlashcard = (qAndA: IFlashcard) => {
   deleteFlashcardAPI(qAndA.question).finally(() => {
+    emitUpdate();
+  });
+};
+
+export const reviewFlashcard = async (flashcard: IFlashcard) => {
+  return updateFlashcardAPI({
+    ...flashcard,
+    last_review_success: Date.now(),
+  }).then(() => {
     emitUpdate();
   });
 };
