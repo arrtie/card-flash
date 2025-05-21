@@ -35,8 +35,6 @@ export const submitFlashcards = async (flashcards: IQA[]) => {
   }
 };
 
-// hypothesis: using the mutator will allow me to create side-effects when the deck has been updated
-
 export const deleteFlashcard = (qAndA: IFlashcard) => {
   deleteFlashcardAPI(qAndA.question).finally(() => {
     emitUpdate();

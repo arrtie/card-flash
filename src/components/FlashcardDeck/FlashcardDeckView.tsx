@@ -1,7 +1,8 @@
 /** @format */
 
-import { IFlashcard } from "../model";
-import Flashcard from "./Flashcard";
+import type { IFlashcard } from "../../model";
+import Flashcard from "../Flashcard";
+export type Deck = typeof FlashcardDeck;
 
 export default function FlashcardDeck({
   flashcards,

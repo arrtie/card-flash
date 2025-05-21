@@ -1,37 +1,18 @@
 /** @format */
 
-import { pipe } from "fp-ts/lib/function";
-import { useCallback } from "preact/hooks";
-import { submitFlashcards } from "./DeckMutator";
-
-const formatFormData = (e: Event & { currentTarget: HTMLFormElement }) => {
-  const formData = new FormData(e.currentTarget);
-  const question = formData.get("question") ?? "empty question";
-  const answer = formData.get("answer") ?? "empty answer";
-
-  return [
-    {
-      question: question.toString(),
-      answer: answer.toString(),
-    },
-  ];
-};
-
 const labelStyle = {
   display: "flex",
   justifyContent: "flex-start",
   flexDirection: "column",
 };
 
-export default function ManualFlashcard() {
-  const handleSubmit = useCallback(
-    async (e: Event & { currentTarget: HTMLFormElement }) => {
-      e.preventDefault();
-      pipe(e, formatFormData, submitFlashcards);
-    },
-    []
-  );
+interface ManualFlashcardProps {
+  handleSubmit: (e: Event & { currentTarget: HTMLFormElement }) => void;
+}
 
+export default function ManualFlashcard({
+  handleSubmit,
+}: ManualFlashcardProps) {
   return (
     <section>
       <h2>Manual</h2>

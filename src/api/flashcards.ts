@@ -7,7 +7,7 @@ import {
   destroyDBFlashcard,
   getAllDBFlashcards,
   updateDBFlashcard,
-} from "../backend/flashcardsIDB";
+} from "../db/flashcardsIDB";
 
 export const getFlashcards = flow(
   getAllDBFlashcards,
