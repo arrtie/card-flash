@@ -1,10 +1,10 @@
 /** @format */
 
 import "./app.css";
-import DeckController from "./components/DeckController.tsx";
-import DataConverterController from "./feature/DataConverterController.tsx";
-import FlashcardsProvider from "./feature/FlashcardsProvider.tsx";
-import ManualFlashcard from "./feature/ManualFlashcard.tsx";
+import DeckController from "./components/FlashcardDeck/DeckController.tsx";
+import ManualFlashcard from "./components/ManualFlashcard";
+import DataConverterController from "./components/PasteFlashcard/index.tsx";
+import FlashcardsProvider from "./contexts/FlashcardsProvider.tsx";
 
 export function App() {
   return (

@@ -1,6 +1,6 @@
 /** @format */
 
-import { IFlashcard } from "../model";
+import type { IFlashcard } from "../model";
 
 const Flashcard = ({ qAndA }: { qAndA: IFlashcard }) => {
   return (

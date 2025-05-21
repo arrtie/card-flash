@@ -4,10 +4,13 @@ import { flow } from "fp-ts/lib/function";
 import { ReactNode } from "preact/compat";
 import { useEffect, useState } from "preact/hooks";
 import { getFlashcards } from "../api/flashcards";
+import FlashcardsContext from "../contexts/FlashcardContext";
+import {
+  DeckMutatorEvent,
+  subscribeToDeckMutator,
+} from "../features/DeckMutator";
 import { IFlashcard } from "../model";
 import Observer from "../patterns/Observer";
-import { DeckMutatorEvent, subscribeToDeckMutator } from "./DeckMutator";
-import FlashcardsContext from "./FlashcardContext";
 
 interface FlashcardsProviderProps {
   children: ReactNode;

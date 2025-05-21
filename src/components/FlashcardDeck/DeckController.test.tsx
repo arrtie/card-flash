@@ -8,10 +8,10 @@ import {
   deleteFlashcard,
   getFlashcards,
   updateFlashcard,
-} from "../api/flashcards";
-import { App } from "../app";
-import questionToPrimaryKey from "../helpers/uid";
-import { IFlashcard } from "../model";
+} from "../../api/flashcards";
+import { App } from "../../app";
+import questionToPrimaryKey from "../../helpers/uid";
+import { IFlashcard } from "../../model";
 
 const makeFlaschard = (props?: Partial<IFlashcard>) => {
   const defaultQ = "what is the sound of one hand clapping?";

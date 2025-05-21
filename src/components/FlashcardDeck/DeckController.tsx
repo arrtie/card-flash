@@ -1,19 +1,21 @@
 /** @format */
 
 import { useMemo, useState } from "preact/hooks";
-import { deleteFlashcard } from "../api/flashcards";
-import { reviewFlashcard } from "../feature/DeckMutator";
+import { deleteFlashcard } from "../../api/flashcards";
+import { reviewFlashcard } from "../../features/DeckMutator";
 import {
   getBetweenNeverAnd1,
   getReviewedFlashcards,
   getUnreviewedFlashcards,
-} from "../feature/FlashcardsFilter";
-import useFlashcards from "../feature/useFlashcards";
-import { IFlashcard } from "../model";
-import FlashcardDeck from "./FlashcardDeck";
+} from "../../features/FlashcardsFilter";
+
+import useFlashcards from "../../contexts/useFlashcards";
+import { IFlashcard } from "../../model";
+import FlashcardDeck from "./FlashcardDeckView";
 
 const filterStates = ["ALL", "REVIEWED", "UNREVIEWED", "NEVERANDONE"] as const;
 type FilterState = (typeof filterStates)[number];
+
 export default function DeckController() {
   const [error, setError] = useState<string>("");
   const [filterState, setFilterState] = useState<FilterState>("ALL");

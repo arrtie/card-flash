@@ -2,14 +2,12 @@
 
 import { IFlashcard } from "../model";
 
-const getFlashcardsBetween = (start: number, stop: number) => {
+export const getFlashcardsBetween = (start: number, stop: number) => {
   return (flashcards: IFlashcard[]) =>
     flashcards.filter(({ last_review_success: timestamp }) => {
       return timestamp != null && timestamp <= stop && timestamp >= start;
     });
 };
-
-export default getFlashcardsBetween;
 
 const isReviewed = ({ last_review_success: timestamp }: IFlashcard) => {
   return timestamp != null;
