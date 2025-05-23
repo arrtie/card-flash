@@ -1,6 +1,6 @@
 /** @format */
 
-import Observer from "./Observer";
+import Observer from './Observer.js';
 
 // Subject Interface
 interface ISubject<T> {
@@ -15,7 +15,7 @@ export class Subject<T> implements ISubject<T> {
   public attach(observer: Observer<T>) {
     const isExist = this.observers.includes(observer);
     if (isExist) {
-      return console.warn("Observer has been attached already.");
+      return console.warn('Observer has been attached already.');
     }
     this.observers.push(observer);
   }
@@ -23,7 +23,7 @@ export class Subject<T> implements ISubject<T> {
   public detach(observer: Observer<T>) {
     const observerIndex = this.observers.indexOf(observer);
     if (observerIndex === -1) {
-      return console.warn("Observer is not attached");
+      return console.warn('Observer is not attached');
     }
     this.observers.splice(observerIndex, 1);
   }

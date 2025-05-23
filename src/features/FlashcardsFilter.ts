@@ -1,6 +1,6 @@
 /** @format */
 
-import { IFlashcard } from "../model";
+import type { IFlashcard } from '../model.js';
 
 export const getFlashcardsBetween = (start: number, stop: number) => {
   return (flashcards: IFlashcard[]) =>
@@ -18,7 +18,7 @@ const deckProvider =
     deck.filter(yourFilter);
 
 export const getUnreviewedFlashcards = deckProvider(
-  (flashcard) => !isReviewed(flashcard)
+  (flashcard) => !isReviewed(flashcard),
 );
 
 export const getReviewedFlashcards = deckProvider(isReviewed);

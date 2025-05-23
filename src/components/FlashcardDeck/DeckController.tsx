@@ -1,41 +1,41 @@
 /** @format */
 
-import { useMemo, useState } from "preact/hooks";
-import { deleteFlashcard } from "../../api/flashcards";
-import { reviewFlashcard } from "../../features/DeckMutator";
+import { useMemo, useState } from 'react';
+import { deleteFlashcard } from '../../api/flashcards.js';
+import { reviewFlashcard } from '../../features/DeckMutator.js';
 import {
   getBetweenNeverAnd1,
   getReviewedFlashcards,
   getUnreviewedFlashcards,
-} from "../../features/FlashcardsFilter";
+} from '../../features/FlashcardsFilter.js';
 
-import useFlashcards from "../../contexts/useFlashcards";
-import { IFlashcard } from "../../model";
-import FlashcardDeck from "./FlashcardDeckView";
+import useFlashcards from '../../contexts/useFlashcards.js';
+import type { IFlashcard } from '../../model.js';
+import FlashcardDeck from './FlashcardDeckView.js';
 
-const filterStates = ["ALL", "REVIEWED", "UNREVIEWED", "NEVERANDONE"] as const;
+const filterStates = ['ALL', 'REVIEWED', 'UNREVIEWED', 'NEVERANDONE'] as const;
 type FilterState = (typeof filterStates)[number];
 
 export default function DeckController() {
-  const [error, setError] = useState<string>("");
-  const [filterState, setFilterState] = useState<FilterState>("ALL");
+  const [error, setError] = useState<string>('');
+  const [filterState, setFilterState] = useState<FilterState>('ALL');
   const flashcards = useFlashcards();
 
   const flashcardsFiltered = useMemo(() => {
-    if (filterState === "NEVERANDONE") {
+    if (filterState === 'NEVERANDONE') {
       return getBetweenNeverAnd1(flashcards);
     }
-    if (filterState === "REVIEWED") {
+    if (filterState === 'REVIEWED') {
       return getReviewedFlashcards(flashcards);
     }
-    if (filterState === "UNREVIEWED") {
+    if (filterState === 'UNREVIEWED') {
       return getUnreviewedFlashcards(flashcards);
     }
     return flashcards;
   }, [flashcards, filterState]);
 
   const onDelete = (qAndA: IFlashcard) =>
-    deleteFlashcard(qAndA.question).catch((err) => {
+    deleteFlashcard(qAndA.question).catch((err: Error) => {
       console.error(err);
       setError(err.message);
     });

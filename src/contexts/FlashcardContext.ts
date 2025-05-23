@@ -1,7 +1,7 @@
 /** @format */
 
-import { createContext } from "preact";
-import { IFlashcard } from "../model";
+import { createContext } from 'react';
+import type { IFlashcard } from '../model.js';
 
 interface IFlashcardsContext {
   flashcards: IFlashcard[];
