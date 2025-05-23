@@ -1,23 +1,24 @@
 /** @format */
 
-import { isLeft, left, map, match, right } from "fp-ts/lib/Either";
-import { flow, pipe } from "fp-ts/lib/function";
-import { submitFlashcards } from "../../features/DeckMutator.ts";
-import { IFlashcard } from "../../model.ts";
-import DataConverter from "./DataConverterView.tsx";
+import { isLeft, left, map, match, right } from 'fp-ts/lib/Either.js';
+import { flow, pipe } from 'fp-ts/lib/function.js';
+import type { FormEvent, FormEventHandler } from 'react';
+import { submitFlashcards } from '../../features/DeckMutator.js';
+import type { IFlashcard } from '../../model.js';
+import DataConverter from './DataConverterView.js';
 
-const generateFormData = (e: Event & { currentTarget: HTMLFormElement }) => {
+const generateFormData = (e: FormEvent<HTMLFormElement>) => {
   const formData = new FormData(e.currentTarget);
-  const userInput = formData.get("userInput");
+  const userInput = formData.get('userInput');
   return userInput == null
-    ? left("empty user input")
+    ? left('empty user input')
     : right(userInput.toString());
 };
 
 const sendFormDataToAnthro = async (userInput: string) => {
-  const init = await import("../../api/anthropothic.ts");
+  const init = await import('../../api/anthropothic.js');
   const response = await init.default(userInput);
-  return response.status === "success"
+  return response.status === 'success'
     ? right(response.flashcards)
     : left(response.message);
 };
@@ -35,11 +36,11 @@ const submitUserInput = flow(
     } else {
       return maybeUserInput;
     }
-  }
+  },
 );
 
-export const submitFlashcardsEffect = async (
-  e: Event & { currentTarget: HTMLFormElement }
+export const submitFlashcardsEffect: FormEventHandler<HTMLFormElement> = async (
+  e,
 ) => {
   e.preventDefault();
 
@@ -47,7 +48,7 @@ export const submitFlashcardsEffect = async (
     const response = await responsePromise;
     match<string, IFlashcard[], void>(
       console.error,
-      submitFlashcards
+      submitFlashcards,
     )(response);
   });
 };

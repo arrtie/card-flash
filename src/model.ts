@@ -11,14 +11,14 @@ export interface IFlashcard extends IQA {
   uid: string;
 }
 
-export type ResponseErrors = "missing content" | "error parsing content";
+export type ResponseErrors = 'missing content' | 'error parsing content';
 
 export type ParsedResponse =
   | {
-      status: "success";
+      status: 'success';
       flashcards: IFlashcard[];
     }
   | {
-      status: "failure";
+      status: 'failure';
       message: ResponseErrors;
     };

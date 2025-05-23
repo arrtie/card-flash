@@ -1,16 +1,15 @@
 /** @format */
 
-import { flow } from "fp-ts/lib/function";
-import { ReactNode } from "preact/compat";
-import { useEffect, useState } from "preact/hooks";
-import { getFlashcards } from "../api/flashcards";
-import FlashcardsContext from "../contexts/FlashcardContext";
+import { flow } from 'fp-ts/lib/function.js';
+import { useEffect, useState, type ReactNode } from 'react';
+import { getFlashcards } from '../api/flashcards.js';
+import FlashcardsContext from '../contexts/FlashcardContext.js';
 import {
-  DeckMutatorEvent,
   subscribeToDeckMutator,
-} from "../features/DeckMutator";
-import { IFlashcard } from "../model";
-import Observer from "../patterns/Observer";
+  type DeckMutatorEvent,
+} from '../features/DeckMutator.js';
+import type { IFlashcard } from '../model.js';
+import Observer from '../patterns/Observer.js';
 
 interface FlashcardsProviderProps {
   children: ReactNode;
@@ -30,7 +29,7 @@ export default function FlashcardsProvider({
 
 function useFlashcardsDataFeed(): IFlashcard[] {
   const [flashcardsFeedData, setFlashcardsFeedData] = useState<IFlashcard[]>(
-    []
+    [],
   );
 
   useEffect(() => {
@@ -39,11 +38,11 @@ function useFlashcardsDataFeed(): IFlashcard[] {
       if (dataOrError instanceof Error) {
         return;
       }
-      setFlashcardsFeedData(dataOrError);
+      setFlashcardsFeedData(dataOrError as IFlashcard[]);
     });
 
     const unsub = subscribeToDeckMutator(
-      new Observer<DeckMutatorEvent>(fetchFlashcards)
+      new Observer<DeckMutatorEvent>(fetchFlashcards),
     );
 
     // fetch on mount

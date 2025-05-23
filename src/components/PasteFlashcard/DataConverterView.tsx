@@ -1,7 +1,7 @@
 /** @format */
 
 interface DataConverterProps {
-  handleSubmit: (e: Event & { currentTarget: HTMLFormElement }) => void;
+  handleSubmit: React.FormEventHandler<HTMLFormElement> | undefined;
 }
 
 export default function DataConverter({ handleSubmit }: DataConverterProps) {
@@ -12,12 +12,12 @@ export default function DataConverter({ handleSubmit }: DataConverterProps) {
         onSubmit={handleSubmit}
         name="data_submission"
         style={{
-          display: "flex",
-          justifyContent: "flex-start",
-          flexDirection: "column",
+          display: 'flex',
+          justifyContent: 'flex-start',
+          flexDirection: 'column',
         }}
       >
-        <label for="userInput">
+        <label htmlFor="userInput">
           User input: <span aria-label="required">*</span>
         </label>
         <textarea id="userInput" name="userInput" required rows={10}></textarea>

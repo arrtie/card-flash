@@ -1,0 +1,9 @@
+{
+  "version": "v1",
+  "packages": {
+    "@arrtie/cardflash": {
+      "signature": "b7c23ba5d51bd03251994316069ebdf0",
+      "file": true
+    }
+  }
+}

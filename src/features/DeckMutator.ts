@@ -4,16 +4,16 @@ import {
   deleteFlashcard as deleteFlashcardAPI,
   postFlashcard,
   updateFlashcard as updateFlashcardAPI,
-} from "../api/flashcards";
-import { IFlashcard, IQA } from "../model";
-import Observer from "../patterns/Observer";
-import { Subject } from "../patterns/Subject";
+} from '../api/flashcards.js';
+import type { IFlashcard, IQA } from '../model.js';
+import Observer from '../patterns/Observer.js';
+import { Subject } from '../patterns/Subject.js';
 
-export type DeckMutatorEvent = "update";
+export type DeckMutatorEvent = 'update';
 const deckMutatorSubject = new Subject<DeckMutatorEvent>();
 
 export const emitUpdate = () => {
-  deckMutatorSubject.notify("update");
+  deckMutatorSubject.notify('update');
 };
 
 export const subscribeToDeckMutator = (obs: Observer<DeckMutatorEvent>) => {

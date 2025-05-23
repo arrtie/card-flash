@@ -1,34 +1,34 @@
 /** @format */
 
-import "@testing-library/dom";
-import { render, screen, waitFor } from "@testing-library/preact";
-import userEvent from "@testing-library/user-event";
-import { describe, expect, test } from "vitest";
+import '@testing-library/dom';
+import { render, screen, waitFor } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import {
   deleteFlashcard,
   getFlashcards,
   updateFlashcard,
-} from "../../api/flashcards";
-import { App } from "../../app";
-import questionToPrimaryKey from "../../helpers/uid";
-import { IFlashcard } from "../../model";
+} from '../../api/flashcards.js';
+import questionToPrimaryKey from '../../helpers/uid.js';
+import { App } from '../../index.js';
+import type { IFlashcard } from '../../model.js';
 
-const makeFlaschard = (props?: Partial<IFlashcard>) => {
-  const defaultQ = "what is the sound of one hand clapping?";
-  const defaultA = "silence";
+const makeFlaschard = (props?: Partial<IFlashcard>): IFlashcard => {
+  const defaultQ = 'what is the sound of one hand clapping?';
+  const defaultA = 'silence';
   return {
     question: defaultQ,
     answer: defaultA,
     uid: questionToPrimaryKey(
-      props?.question == null ? defaultQ : props?.question
+      props?.question == null ? defaultQ : props?.question,
     ),
-    created: Date.now(),
+    created: Date.now().toString(),
     last_review_success: null,
     ...props,
   };
 };
 
-vi.mock("../api/flashcards", () => ({
+vi.mock('../api/flashcards', () => ({
   __esModule: true,
   getFlashcards: vi.fn(),
   deleteFlashcard: vi.fn(),
@@ -44,7 +44,7 @@ beforeEach(() => {
   mockGetFlashcards.mockImplementation(() => Promise.resolve([]));
   mockDeleteFlashcard.mockImplementation(async () => undefined);
   mockDeleteFlashcard.mockClear();
-  mockReviewFlashcard.mockImplementation(async () => undefined);
+  mockReviewFlashcard.mockImplementation(async () => new Error());
   mockReviewFlashcard.mockClear();
   vi.useFakeTimers();
 });
@@ -59,14 +59,18 @@ const renderDeckController = async () => {
   return { result, screenUser };
 };
 
-describe("when there are flashcards", () => {
-  const flashcards = [
+describe('when there are flashcards', () => {
+  const flashcards: IFlashcard[] = [
     makeFlaschard({
-      question: "What is your name?",
-      answer: "artie",
+      question: 'What is your name?',
+      answer: 'artie',
     }),
   ];
+
   const flashcard = flashcards[0];
+  if (flashcard == null) {
+    throw new Error('flashcard does not exist');
+  }
 
   beforeEach(() => {
     mockGetFlashcards.mockImplementation(async () => flashcards);
@@ -76,13 +80,13 @@ describe("when there are flashcards", () => {
     renderDeckController();
     await waitFor(() => {
       expect(
-        screen.queryAllByText(new RegExp(flashcard.question))
+        screen.queryAllByText(new RegExp(flashcard.question)),
       ).toHaveLength(1);
       expect(screen.queryAllByText(new RegExp(flashcard.answer))).toHaveLength(
-        1
+        1,
       );
-      expect(screen.getByRole("button", { name: "Delete" })).toBeDefined();
-      expect(screen.getByRole("button", { name: "Review" })).toBeDefined();
+      expect(screen.getByRole('button', { name: 'Delete' })).toBeDefined();
+      expect(screen.getByRole('button', { name: 'Review' })).toBeDefined();
     });
   });
 
@@ -90,17 +94,17 @@ describe("when there are flashcards", () => {
     const renderAndDelete = async () => {
       const result = await renderDeckController();
       await waitFor(() => {
-        screen.getByRole("button", { name: "Delete" });
+        screen.getByRole('button', { name: 'Delete' });
       });
       await result.screenUser.click(
-        screen.getByRole("button", { name: "Delete" })
+        screen.getByRole('button', { name: 'Delete' }),
       );
       return result;
     };
 
-    test("the card is removed", async () => {
+    test('the card is removed', async () => {
       await renderAndDelete();
-      expect(mockDeleteFlashcard).toHaveBeenCalledWith("What is your name?");
+      expect(mockDeleteFlashcard).toHaveBeenCalledWith('What is your name?');
     });
   });
 
@@ -109,15 +113,15 @@ describe("when there are flashcards", () => {
       const now = Date.now();
       const result = await renderDeckController();
       await waitFor(() => {
-        screen.getByRole("button", { name: "Review" });
+        screen.getByRole('button', { name: 'Review' });
       });
       await result.screenUser.click(
-        screen.getByRole("button", { name: "Review" })
+        screen.getByRole('button', { name: 'Review' }),
       );
       return { result, mocks: { now } };
     };
 
-    test("the card is posted for update with new values", async () => {
+    test('the card is posted for update with new values', async () => {
       const {
         mocks: { now },
       } = await renderAndReview();
