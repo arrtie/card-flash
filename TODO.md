@@ -4,6 +4,7 @@
 
 ## Features
 
+- [ ] Recipe: "show me the top card of my Leitner box"
 - [ ] conditional select responses from server to save to indexedDB
 - [ ] plural versus singular flashcard creation prompts
 - [x] display previous flashcard data
